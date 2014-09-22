@@ -265,6 +265,15 @@ typedef void (^TMDiskCacheObjectBlock)(TMDiskCache *cache, NSString *key, id <NS
 - (id <NSCoding>)objectForKey:(NSString *)key;
 
 /**
+ Retrieves the object age for the specified key. This method blocks the calling thread until the
+ object is available.
+ 
+ @param key The key associated with the object.
+ @result The object age for the specified key.
+ */
+- (NSTimeInterval)objectAgeForKey:(NSString *)key exist:(BOOL *)exist;
+
+/**
  Retrieves the file URL for the specified key. This method blocks the calling thread until the
  url is available. Do not use this URL anywhere but on the <sharedQueue>. This method probably
  shouldn't even exist, just use the asynchronous one.

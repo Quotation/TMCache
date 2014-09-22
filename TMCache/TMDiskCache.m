@@ -389,7 +389,7 @@ NSString * const TMDiskCacheSharedName = @"TMDiskCacheShared";
 
 - (void)objectForKey:(NSString *)key block:(TMDiskCacheObjectBlock)block
 {
-    NSDate *now = [[NSDate alloc] init];
+//    NSDate *now = [[NSDate alloc] init];
 
     if (!key || !block)
         return;
@@ -406,7 +406,7 @@ NSString * const TMDiskCacheSharedName = @"TMDiskCacheShared";
 
         if ([[NSFileManager defaultManager] fileExistsAtPath:[fileURL path]]) {
             object = [NSKeyedUnarchiver unarchiveObjectWithFile:[fileURL path]];
-            [strongSelf setFileModificationDate:now forURL:fileURL];
+//            [strongSelf setFileModificationDate:now forURL:fileURL];
         }
 
         block(strongSelf, key, object, fileURL);
@@ -415,7 +415,7 @@ NSString * const TMDiskCacheSharedName = @"TMDiskCacheShared";
 
 - (void)fileURLForKey:(NSString *)key block:(TMDiskCacheObjectBlock)block
 {
-    NSDate *now = [[NSDate alloc] init];
+//    NSDate *now = [[NSDate alloc] init];
 
     if (!key || !block)
         return;
@@ -430,7 +430,7 @@ NSString * const TMDiskCacheSharedName = @"TMDiskCacheShared";
         NSURL *fileURL = [strongSelf encodedFileURLForKey:key];
 
         if ([[NSFileManager defaultManager] fileExistsAtPath:[fileURL path]]) {
-            [strongSelf setFileModificationDate:now forURL:fileURL];
+//            [strongSelf setFileModificationDate:now forURL:fileURL];
         } else {
             fileURL = nil;
         }
@@ -691,6 +691,21 @@ NSString * const TMDiskCacheSharedName = @"TMDiskCacheShared";
     #endif
 
     return objectForKey;
+}
+
+- (NSTimeInterval)objectAgeForKey:(NSString *)key exist:(BOOL *)exist
+{
+    NSTimeInterval age = 0;
+    NSDate *date = key ? [_dates objectForKey:key] : nil;
+    if (date) {
+        age = -[date timeIntervalSinceNow];
+    }
+    
+    if (exist) {
+        *exist = (date != nil);
+    }
+    
+    return age;
 }
 
 - (NSURL *)fileURLForKey:(NSString *)key
